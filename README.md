@@ -1,52 +1,61 @@
-# Heart Disease Prediction
+# Netflix Dataset Cleaning & Exploratory Data Analysis (EDA)
 
-A machine learning project that predicts whether a patient has heart disease
-based on their medical attributes, using the UCI Heart Disease dataset.
+This repository contains a Data Cleaning and Analysis workflow performed on the official Netflix Titles dataset using Python and Pandas.
 
-## Dataset
+## Project Overview
+The goal of this project is to clean, transform, and prepare raw Netflix data for further exploratory data analysis (EDA) and visualization. It resolves missing values, corrects data types, and prepares the dataset for trends evaluation (e.g., content distribution, release trends, genres, and ratings).
 
-[Heart Failure Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction)
-(originally 1025 rows, 14 columns) — sourced from Kaggle.
+---
 
-## What was done
+## Dataset Details
+- **Raw File:** `netflix_titles.csv`
+- **Cleaned File:** `netflix_clean.csv`
+- **Total Records:** 8,807 rows × 12 columns
 
-1. **Data cleaning** — found and removed 723 duplicate rows, leaving 302
-   unique patient records.
-2. **Exploratory analysis** — checked missing values, outliers, and target
-   class balance (164 vs 138 — well balanced).
-3. **Label verification** — used `groupby('target')` on key columns
-   (age, max heart rate, exercise angina, etc.) to confirm which label
-   value actually represents "disease" rather than assuming.
-4. **Model comparison** — trained and evaluated three algorithms:
+### Features / Columns:
+- `show_id`: Unique identifier for each show
+- `type`: Content category (`Movie` or `TV Show`)
+- `title`: Name of the title
+- `director`: Director of the show/movie
+- `cast`: Actors involved
+- `country`: Country of production
+- `date_added`: Date when the content was added on Netflix
+- `release_year`: Actual release year
+- `rating`: Content rating (e.g., TV-MA, PG-13)
+- `duration`: Duration in minutes (Movies) or seasons (TV Shows)
+- `listed_in`: Genres / categories
+- `description`: Short summary of the show
 
-   | Model | Accuracy |
-   |---|---|
-   | Logistic Regression | 77.05% |
-   | **Random Forest** | **83.61%** ✅ |
-   | K-Nearest Neighbors | 73.77% |
+---
 
-5. **Final model** — Random Forest was selected as the best performer and
-   saved as `heart_rf_model.pkl` for reuse without retraining.
+## Data Cleaning Steps Taken
+1. **Initial Inspection:** Evaluated dataframe shape, missing values count, and checked for duplicate rows.
+2. **Handling Missing Values:**
+   - Critical null entries in `date_added`, `rating`, and `duration` were dropped due to low missing counts.
+   - Categorical missing values in `director`, `cast`, and `country` were filled with `'Unknown'`.
+3. **Data Type Parsing:** Converted string-formatted dates in `date_added` to standard `datetime64` format.
+4. **Data Export:** Exported the final processed data to `netflix_clean.csv`.
 
-## Files
+---
 
-- `heart_diseases.ipynb` — full workflow: cleaning, EDA, training, evaluation
-- `heart_clean.csv` — cleaned dataset (duplicates removed)
-- `heart_rf_model.pkl` — trained Random Forest model, ready to load with `joblib`
+##  Recommended Future Enhancements
+- [ ] Parse `duration` into two distinct numeric columns: `duration_min` for Movies and `seasons` for TV Shows.
+- [ ] Extract `year_added` and `month_added` from `date_added` for visual time-series trends.
+- [ ] Unnest / Explode multi-value columns (`cast`, `country`, `listed_in`) for localized and actor-specific analysis.
+- [ ] Add Matplotlib/Seaborn visual charts (Top Producing Countries, Movie vs TV Show split, Content Addition Trends).
 
-## How to use the saved model
+---
 
-\`\`\`python
-import joblib
-import pandas as pd
-
-model = joblib.load("heart_rf_model.pkl")
-
-patient = pd.DataFrame([{
-    "age": 58, "sex": 1, "cp": 2, "trestbps": 140, "chol": 230,
-    "fbs": 0, "restecg": 1, "thalach": 150, "exang": 0,
-    "oldpeak": 1.2, "slope": 1, "ca": 0, "thal": 2
-}])
-
-patient = patient[model.feature_names_in_]
-prediction = model.predict(patient)
+##  How to Run
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Install required dependencies:
+   ```bash
+   pip install pandas notebook matplotlib seaborn
+   ```
+3. Open the Jupyter Notebook:
+   ```bash
+   jupyter notebook
+   ```
